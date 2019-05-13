@@ -3,19 +3,23 @@
 
 void* my_calloc(unsigned n, unsigned size);
 
-main() {
-	double* p;
+int main() {
+	int* p;
 	int size;
 	printf("Please enter size : ");
 	scanf("%d", &size);
-	p = (double*)my_calloc(size, sizeof p);
+	p = (int*)my_calloc(size, sizeof p);
+	if (!p) {
+		printf("Cannot allocate memory!");
+		return 1;
+	}
 	int i;
 	//int e = 158763;
 	//p[4] = e;
 	for (i = 0; i < size; i++) {
-		printf("%lf, %p\n", *p++, p);     
+		printf("Value : %d at %p\n", *p++, p);     
 	}
-
+	return 0;
 }
 
 void* my_calloc(unsigned n, unsigned size) {
@@ -26,13 +30,13 @@ void* my_calloc(unsigned n, unsigned size) {
 	if (!p) {
 		return NULL;
 	}
-	memset(p, 0, n * size);  //memset sets the value 0, form p the next n*size bits
-	return p;
+	//memset(p, 0, n * size);  //memset sets the value 0, form p the next n*size bits
+	//return p;
 
-	//for(i = 0; i <= n * size; i++){
-	//	*p++ = 0;
-	//}
-	//return q;                 //q is still pointing at the begin, p now is pointing at the end
+	for(i = 0; i <= n * size; i++){
+		*p++ = 0;
+	}
+	return q;                 //q is still pointing at the begin, p now is pointing at the end
 }
 
 
