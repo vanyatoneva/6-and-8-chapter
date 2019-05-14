@@ -1,4 +1,5 @@
 #include<stdio.h>
+#include<stdlib.h>
 #include"ll_func.h"
 
 Listptr makeNode(int n) {
@@ -11,12 +12,14 @@ Listptr makeNode(int n) {
 /*************************************************************************************************************/
 
 void addAtEnd(int n, Listptr head) {
+	
 	Listptr cur = head;
 	Listptr l = makeNode(n);   //make node with n value
 	while (cur->next != NULL) {   //goes to the last node of list
 		cur = cur->next;
 	}
 	cur->next = l;     //makes the last node to points at the new one
+	
 }
 
 /*************************************************************************************************************/
@@ -113,6 +116,10 @@ int GetNth(Listptr head, int n) {   /*returns value of n-th element in the list*
 
 
 void deleteList(Listptr* headp) {
+	if (headp == NULL || *headp == NULL) {
+		printf("List is empty!\n");
+		return;
+	}
 	Listptr cur = *headp;   //gets the first element
 	Listptr next;           
 	while (cur != NULL) {  
@@ -218,6 +225,214 @@ void frontBackSplit(Listptr head, Listptr* front, Listptr* back) {
 
 
 /*************************************************************************************************************/
+
+void removeDuplicates(Listptr* head) {
+	if (head == NULL) {
+		printf("List is empty!\n");
+		return;
+	}
+	Listptr temp = *head;
+	while (temp->next != NULL) {   
+		if (temp->val == temp->next->val) {
+			Listptr todel = temp->next;    
+			temp->next = todel->next;
+			free(todel);
+		}
+		else {       //if temp was the same like next one, check again - this value can be in the list more than two times, only if different go to next
+			temp = temp->next;
+		}
+	}
+}
+
+/*************************************************************************************************************/
+
+void moveNode(Listptr* to, Listptr* from) {
+	int n = (*from)->val;   //get the value of first elem of sec list
+	push(to, n);           //push if to the first one
+	pop(from);              //remove the first elem of second list
+}
+
+/*************************************************************************************************************/
+
+void alternatingSplit(Listptr head, Listptr* first, Listptr* sec) { //using movenode function => the new lists are reversed
+	int i, l = getLen(head);
+	for (i = 0; i < l; i++) {
+		if (i % 2 == 0) {  //if even elem. move to first, otherwise in second
+			moveNode(first, &head);
+		}
+		else {
+			moveNode(sec, &head);
+		}
+	}
+
+}
+
+/*************************************************************************************************************/
+
+void alternatingSplit2(Listptr head, Listptr* first, Listptr* sec) {  //after the function head still keeps last values???
+	int i, l = getLen(head);
+	moveNode(first, &head);  //getting the first two element of the list
+	moveNode(sec, &head);
+		for (i = 2; i < l; i++) {  //from 3th element to the end, move if even - to the end of the first, odd => to the end of second
+			if(i%2 == 0){
+				int n = pop(&head);    
+				addAtEnd(n, *first);
+			}
+			else {
+				int n = pop(&head);
+				addAtEnd(n, *sec);
+			}
+	}
+		deleteList(&head);
+}
+
+
+/*************************************************************************************************************/
+
+Listptr shuffleMerge(Listptr f, Listptr s) {
+	Listptr merged = makeNode(pop(&f));    //make new list - begins with first elem of the first
+	while (f != NULL && s != NULL) {       //while there are elem. in the two
+		addAtEnd(pop(&s), merged);         //first get from second one(started with the first)
+		addAtEnd(pop(&f), merged);         //than from first
+	}
+	if (f == NULL && s != NULL) {         //if reached the end of first, but there are more element in the second, get them
+		while (s != NULL) {
+			addAtEnd(pop(&s), merged);
+		}
+	}
+	else if (f != NULL && s == NULL) {     // -||-
+		while (f != NULL) {
+			addAtEnd(pop(&f), merged);
+		}
+	}
+	return merged;
+}
+
+/*************************************************************************************************************/
+
+Listptr sortedMerge(Listptr f, Listptr s) {
+	if (f == NULL || s == NULL) {            //checking if lists have elements, if one is empty return null instead of coping the other one
+		printf("One of lists is empty!\n");
+		return NULL;
+	}
+	else {
+		int fe = f->val < s->val ? pop(&f) : pop(&s);    //sets the smaller element for first  
+		Listptr merged = makeNode(fe);
+		while (f != NULL && s != NULL) {                //while two list have elements, add the smaller of them
+			int min = f->val < s->val ? pop(&f) : pop(&s);
+			addAtEnd(min, merged);
+		}
+		if (f == NULL && s != NULL) {     //if end of one of list is reached, get the elements of other(they are already sorteD)
+			while (s != NULL) {
+				addAtEnd(pop(&s), merged);
+			}
+		}
+		else if (f != NULL && s == NULL) {
+			while (f != NULL) {
+				addAtEnd(pop(&f), merged);
+			}
+		}
+		return merged;
+	}
+
+}
+
+/*************************************************************************************************************/
+
+void mergeSort(Listptr* head) {
+	if (*head == NULL || (*head)->next == NULL) {   //if last element reached, return
+		return;
+	}
+	else {
+		Listptr f, b;     
+		frontBackSplit(*head, &f, &b);  
+		mergeSort(&f);                  
+		mergeSort(&b);                  
+		*head = sortedMerge(f, b);      
+	}
+	
+}
+
+
+/*************************************************************************************************************/
+
+Listptr sortedIntersection(Listptr f, Listptr s) {
+	Listptr intersect = NULL;  //create new list
+	Listptr firstL = f;         //make new pointers to check elements of lists, without changing them 
+	Listptr secL = s;
+	while (firstL != NULL && secL != NULL) { 
+		if (firstL->val > secL->val) {   //if the value of first list is bigger than the second, check the next element of second(they may be same)
+			secL = secL->next;
+		}
+		else if (secL->val > firstL->val) {  //also if the second value is bigger than first
+			firstL = firstL->next;
+		}
+		else {  //if elements are with same value
+			if (intersect == NULL) {    //if there are no elements, make new 
+				intersect = makeNode(firstL->val);
+			}
+			else {                          //or if there are elements, add it to the end of the list and move to the next elements of the lists
+				addAtEnd(firstL->val, intersect);
+			}
+			firstL = firstL->next;  
+			secL = secL->next;
+		}
+	}
+	return intersect;
+}
+
+/*************************************************************************************************************/
+
+void reverse(Listptr* head) {
+	int l = getLen((*head));
+	int i , mid = l/2;
+	i = 0;
+	Listptr first, last, cur;
+	while (i < mid) {
+		cur = first = *head;
+		last = cur->next;
+		int j = i;
+		while (j > 0) {
+			first = first->next;
+		}
+		int k = 0;
+		while (k < l) {
+			cur = cur->next;
+			last = last->next;
+		}
+		if (i == 0) {
+			last->next = first->next;
+			cur->next = first;
+			first->next = NULL;
+			*head = last;
+		}
+		else {
+
+		}
+		l--;
+		i++;
+	}
+}
+
+/*************************************************************************************************************/
+
+void reverseRec(Listptr* head) {
+	if (*head == NULL || (*head)->next == NULL) {  //if no elements or only one - return
+		return;
+	}
+	else {
+		Listptr f, l;
+		frontBackSplit(*head, &f, &l);    
+		reverseRec(&f);                   
+		reverseRec(&l);
+		append(&l, &f);
+		*head = l;
+	}
+	
+}
+
+/*************************************************************************************************************/
+
 
 void printList(Listptr head) {
 	if (head == NULL) {
