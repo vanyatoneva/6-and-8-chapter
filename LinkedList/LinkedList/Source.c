@@ -1,7 +1,14 @@
 #include<stdio.h>
 #include"ll_func.h"
 
-void otherfunc(Listptr f, Listptr s, Listptr t);
+
+
+void oneArgVoid(int n, void(*f)(Listptr*), Listptr* fi, Listptr* s, Listptr* t);   //n is num of the list, which will be passed to the function
+void threeArgFun(int n, void(*f)(Listptr, Listptr*, Listptr*), Listptr* fi, Listptr* s, Listptr* t); //void function, which takes one Listptr, and the ListptrRef
+Listptr twoArgsFun(int n, int n1, Listptr(*f)(Listptr, Listptr), Listptr* fi, Listptr* s, Listptr* t); //function, that takes two Listptr and return new Listptr
+
+
+void otherfunc(Listptr* f, Listptr* s, Listptr* t);
 
 
 main() {
@@ -129,18 +136,7 @@ void otherfunc(Listptr* f, Listptr* s, Listptr* t) {
 		case '0':
 			printf("Choose a list to sort - 1 for the first, 2 for the second, 3 for thirth : ");
 			scanf("%d", &num);
-			if (num == 1) {
-				insertSort(f);
-			}
-			else if (num == 2) {
-				insertSort(s);
-			}
-			else if (num == 3) {
-				mergeSort(t);
-			}
-			else{
-				printf("Inavlid input!\n");
-			}
+			oneArgVoid(num, *insertSort, f, s, t);
 			getchar();
 			break;
 		case '1':
@@ -205,106 +201,48 @@ void otherfunc(Listptr* f, Listptr* s, Listptr* t) {
 			getchar();
 			break;
 		case '3':
-			frontBackSplit(*f, s, t);
-			*f = NULL;
+			printf("Choose list to split : ");
+			scanf("%d", &num);
 			getchar();
+			threeArgFun(num, (*frontBackSplit), f, s, t);
 			break;
 		case '4':
 			printf("Choose list to remove duplicates from : ");
 			scanf("%d", &num);
 			getchar();
-			if (num == 1) {
-				removeDuplicates(f);
-			}
-			else if (num == 2) {
-				removeDuplicates(s);
-			}
-			else if (num == 3) {
-				removeDuplicates(t);
-			}
-			else {
-				printf("Invalid input! Choose from 1, 2 or 3!");
-			}
+			oneArgVoid(num, *removeDuplicates, f, s, t);
 			break;
 		case '5':
 			printf("Choose list to split : ");
 			scanf("%d", &num);
 			getchar();
-			if (num == 1) {
-				alternatingSplit2(*f, s, t);
-				*f = NULL;
-			}
-			else if (num == 2) {
-				alternatingSplit2(*s, f, t);
-				*s = NULL;
-			}
-			else if (num == 3) {
-				alternatingSplit2(*t, f, s);
-				*t = NULL;
-			}
-			else {
-				printf("Invalid input! Choose from 1, 2 or 3!");
-			}
+			threeArgFun(num, (*alternatingSplit2), f, s, t);
 			break;
 		case '6':
-			printf("Which lists to merge ? ");
+			printf("Which lists ?");
 			scanf("%d", &num);
 			scanf("%d", &num2);
-			if (num == 1) {
-				if (num2 == 2) {
-					*t = shuffleMerge(*f, *s);
-				}
-				else if (num2 == 3) {
-					*s = shuffleMerge(*f, *t);
-				}
-				else {
-					printf("Invalid input for second list!\n");
-				}
-			}
-			else if (num == 2) {
-				if (num2 == 1) {
-					 *t = shuffleMerge(*s, *f);
-				}
-				else if (num2 == 3) {
-					*f = shuffleMerge(*s, *t);
-				}
-				else {
-					printf("Invalid input for second list!\n");
-				}
-			}
-			else if (num == 3) {
-				if (num2 == 1) {
-					*s = shuffleMerge(*t, *f);
-				}
-				else if (num2 == 2) {
-					*f = shuffleMerge(*t, *s);
-				}
-				else {
-					printf("Invalid input for second list!\n");
-				}
-			}
+			twoArgsFun(num, num2, (*shuffleMerge), f, s, t);
 			getchar();
 			break;
 		case '7':
-			sortedMerge(*f, *s);
+			printf("Which lists ?");
+			scanf("%d", &num);
+			scanf("%d", &num2);
+			twoArgsFun(num, num2, (*sortedMerge), f, s, t);
 			getchar();
 			break;
 		case '8':
-			*f = sortedIntersection(*s, *t);
+			printf("Which lists ?");
+			scanf("%d", &num);
+			scanf("%d", &num2);
+			twoArgsFun(num, num2, (*sortedIntersection), f, s, t);
 			getchar();
 			break;
 		case '9':
-			printf("To reverse recursively press 1, or 2 if not : ");
+			printf("Which list do you want to reverse ?  ");
 			scanf("%d", &num);
-			if (num == 1) {
-				reverseRec(f);
-			}
-			else if (num == 2) {
-				reverse(f);
-			}
-			else {
-				printf("Invalid input!");
-			}
+			oneArgVoid(num, *reverse, f, s, t);
 			getchar();
 			break;
 		case 'P':
@@ -344,5 +282,83 @@ void otherfunc(Listptr* f, Listptr* s, Listptr* t) {
 		printf("\n\n");
 	}
 
+	
+}
+
+
+void oneArgVoid(int n, void(*f)(Listptr*), Listptr* fi, Listptr* s, Listptr* t) {
+	if (n == 1) {
+		(*f)(fi);
+	}
+	else if(n ==2){
+		(*f)(s);
+	}
+	else if (n == 3) {
+		(*f)(t);
+	}
+	else {
+		printf("Invalid input!\n");
+	}
+}
+
+void threeArgFun(int n, void(*f)(Listptr, Listptr*, Listptr*), Listptr* fi, Listptr* s, Listptr* t) {
+	if (n == 1) {
+		(*f)(*fi, s, t);
+		*fi = NULL;
+	}
+	else if (n == 2) {
+		(*f)(*s, fi, t);
+		*s = NULL;
+	}
+	else if (n == 3) {
+		(*f)(*t, fi, s);
+		*t = NULL;
+	}
+	else {
+		printf("Invalid input! Choose from 1, 2 or 3!");
+	}
+}
+
+Listptr twoArgsFun(int n, int n2, Listptr(*f)(Listptr, Listptr), Listptr* fi, Listptr* s, Listptr* t) {
+	if (n == 1) {
+		if (n2 == 2) {
+			*t = (*f)(*fi, *s);
+		}
+		else if (n2 == 3) {
+			*s = (*f)(*fi, *t);
+		}
+		else {
+			printf("Invalid input for the second list!\n");
+			return;
+		}
+	}
+	else if (n == 2) {
+		if (n2 == 1) {
+			*t = (*f)(*s, *fi);
+		}
+		else if (n2 == 3) {
+			*fi = (*f)(*s, *t);
+		}
+		else {
+			printf("Invalid input for the second list!\n");
+			return;
+		}
+	}
+	else if (n == 3) {
+		if (n2 == 1) {
+			*s = (*f)(*t, *fi);
+		}
+		else if (n2 == 2) {
+			*fi = (*f)(*t, *s);
+		}
+		else {
+			printf("Invalid input for the second list!\n");
+			return;
+		}
+	}
+	else {
+		printf("Invalid input for the first list!\n");
+		return;
+	}
 	
 }
