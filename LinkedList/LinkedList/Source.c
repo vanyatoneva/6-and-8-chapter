@@ -1,139 +1,307 @@
 #include<stdio.h>
 #include"ll_func.h"
 
+void otherfunc(Listptr f, Listptr s, Listptr t);
 
 
 main() {
-	/*Listptr head = makeNode(5);    //make  list
-	addAtEnd(1, head);
-	addAtEnd(5, head);
-	addAtEnd(3, head);
-	addAtEnd(7, head);
-	push(&head, 10);
-	printf("The element with value %d was pushed to list\n", pop(&head));
-	insertNth(&head, 3, 8);
-
-	int nth = GetNth(head, 3);
-	if (nth != -1) {   // getnth return -1 if n is bigger than length of list, or the list is empty and the function prints the error message
-		printf("%dth element is %d\n", 3, nth);
-	}
-
-	printf("5 is %d times in the list\n", count(head, 5));
-
-	insertSort(&head);   //sort the list
-	printList(head);
-
-
-	//deleteList(&head);  
-	//printList(head);
-	//pop(&head);
-	//printf("Length of list is %d\n", getLen(head));
-	//Listptr n = makeNode(2);  
-	//sortedInsert(&head, n);  
-	//printList(head);
-
-
-
-	Listptr nodeToAdd = makeNode(7);
-	Listptr head2 = makeNode(11);
-	push(&head2, 9); push(&head2, 8); push(&head2, 5); push(&head2, 3); push(&head2, 2); //new list made
-	sortedInsert(&head2, nodeToAdd);  //insert element in right position in sorted list
-	Listptr bigger = makeNode(13);
-	sortedInsert(&head2, bigger);
-	Listptr one = makeNode(1);
-	sortedInsert(&head2, one);
-	printList(head2);
-
-
-	append(&head, &head2);   //append second to first list
-	printList(head);
-	printList(head2);
-
-	Listptr head1 = makeNode(81);   //new list
-	deleteList(&head);
-	//push(&head, 2);
-	//push(&head, 3);
-	//push(&head, 4);
-	//push(&head, 5);
-	//frontBackSplit(head, &head1, &head2);
-	//printList(head1);
-	//printList(head2);
-	for (int i = 20; i > 6; i--) {
-		if (i == 8) {
-			for (int j = 0; j < 4; j++) {
-				push(&head, i);
+	Listptr f, s, t;
+	f = s = t = NULL;
+	char c;
+	int p, n;
+	printf("To make a list press 1\n");
+	printf("To push node press 2\n");
+	printf("To pop a press 3\n");
+	printf("To delete list press 4\n");
+	printf("To see length of list press 5\n");
+	printf("To print the list press 6\n");
+	printf("To insert element in n-th position press 7\n");
+	printf("To get the element in n-th position, press 8\n");
+	printf("For other actions press 9\n");
+	printf("To add element in the end of the list press 0\n");
+	printf("To exit the program press E\n");
+	printf("\n\n");
+	while ((c = getchar()) != 'E') {
+		switch (c) {
+		case '1':
+			printf("Please choose a value for the node : ");
+			if (f != NULL) {
+				printf("This will delete the information of the list and make new\n");
 			}
+			scanf("%d", &n);
+			f = makeNode(n);
+			getchar();
+			break;
+		case '2':
+			printf("Please choose a value for the node : ");
+			scanf("%d", &n);
+			push(&f, n);
+			getchar();
+			break;
+		case '3':
+			n = pop(&f);
+			if (n != -1) {
+				printf("The element you deleted has value : %d\n", n);
+			}
+			getchar();
+			break;
+		case '4':
+			deleteList(&f);
+			getchar();
+			break;
+		case '5':
+			printf("The length of list is : %d\n", getLen(f));
+			getchar();
+			break;
+		case '6':
+			printf("The list is : ");
+			printList(f);
+			getchar();
+			break;
+		case '7':
+			printf("Enter the value you want to insert : ");
+			scanf("%d", &n);
+			getchar();
+			printf("Enter the position to insert it : ");
+			scanf("%d", &p);
+			getchar();
+			insertNth(&f, p, n);
+			break;
+		case '8':
+			printf("Enter the position you want to see : ");
+			scanf("%d", &p);
+			if (GetNth(f, p) != -1) {
+				printf("The element in %dth position has value : %d\n", p, GetNth(f, p));
+			}
+			getchar();
+			break;
+		case '9':
+			otherfunc(&f, &s, &t);
+			getchar();
+			break;
+		case '0':
+			printf("Enter the value you want to insert : ");
+			scanf("%d", &n);
+			getchar();
+			addAtEnd(n, f);
+			break;
+		default:
+			printf("Invalid input!\n");
+			break;
+
 		}
-		push(&head, i);
+		printf("\n\nTo make a list press 1\n");
+		printf("To push node press 2\n");
+		printf("To pop a press 3\n");
+		printf("To delete list press 4\n");
+		printf("To see length of list press 5\n");
+		printf("To print the list press 6\n");
+		printf("To insert element in n-th position press 7\n");
+		printf("To get the element in n-th position, press 8\n");
+		printf("For other actions press 9\n");
+		printf("To exit the program press E\n");
+		printf("\n\n");
 	}
-	for (int i = 14; i > 3; i--) {
-		push(&head1, i);
+
+}
+
+
+void otherfunc(Listptr* f, Listptr* s, Listptr* t) {
+	char c; 
+	int num, num2;
+	printf("To sort the list press 0\n");
+	printf("To insert element in sorted list press 1\n");
+	printf("To append one list to another press 2\n");
+	printf("To split a list at two halfs press 3\n");
+	printf("To remove duplicates of the list press 4\n");
+	printf("To split the elements alternating press 5\n");
+	printf("To merge shufle two lists press 6\n");
+	printf("To merge two sorted lists press 7\n");
+	printf("To see the intersection of two lists press 8\n");
+	printf("To reverse list press 9\n");
+	printf("To pritn the list press P\n");
+	printf("To return press R\n");
+	printf("\n\n");
+	while ((c = getchar()) != 'R') {
+		switch (c) {
+		case '0':
+			printf("Choose a list to sort - 1 for the first, 2 for the second, 3 for thirth : ");
+			scanf("%d", &num);
+			if (num == 1) {
+				insertSort(f);
+			}
+			else if (num == 2) {
+				insertSort(s);
+			}
+			else if (num == 3) {
+				mergeSort(t);
+			}
+			else{
+				printf("Inavlid input!\n");
+			}
+			getchar();
+			break;
+		case '1':
+			if (isSorted(f)) {
+				printf("Enter value to insert : ");
+				scanf("%d", &num);
+				sortedInsert(f, makeNode(num));
+			}
+			else {
+				printf("The list is not sorted!\n");
+			}
+			getchar();
+			break;
+		case '2':
+			printf("Enter the list to append : ");
+			scanf("%d", &num);
+			getchar();
+			printf("Enter from where : ");
+			scanf("%d", &num2);
+			if (num == 1) {
+				if (num2 == 2) {
+					append(f, s);
+					*s = NULL;
+				}
+				else if (num2 == 3) {
+					append(f, t);
+					*t = NULL;
+				}
+				else {
+					printf("Invalid second input! Can choose from 2 or 3!\n");
+				}
+			}
+			else if (num == 2) {
+				if (num2 == 1) {
+					append(s, f);
+					*f = NULL;
+				}
+				else if (num2 == 3) {
+					append(s, t);
+					*t = NULL;
+				}
+				else {
+					printf("Invalid second input! Can choose from 1 or 3!\n");
+				}
+			}
+			else if (num == 3) {
+				if (num2 == 1) {
+					append(t, f);
+					*f = NULL;
+				}
+				else if (num2 == 2) {
+					append(t, s);
+					*s = NULL;
+				}
+				else {
+					printf("Invalid second input! Can choose from 1 or 2!\n");
+				}
+			}
+			else {
+				printf("Invalid input! Choose from 1, 2 or 3\n");
+			}
+			getchar();
+			break;
+		case '3':
+			frontBackSplit(*f, s, t);
+			*f = NULL;
+			getchar();
+			break;
+		case '4':
+			printf("Choose list to remove duplicates from : ");
+			scanf("%d", &num);
+			getchar();
+			if (num == 1) {
+				removeDuplicates(f);
+			}
+			else if (num == 2) {
+				removeDuplicates(s);
+			}
+			else if (num == 3) {
+				removeDuplicates(t);
+			}
+			else {
+				printf("Invalid input! Choose from 1, 2 or 3!");
+			}
+			break;
+		case '5':
+			printf("Choose list to split : ");
+			scanf("%d", &num);
+			getchar();
+			if (num == 1) {
+				alternatingSplit2(*f, s, t);
+			}
+			else if (num == 2) {
+				alternatingSplit2(*s, f, t);
+			}
+			else if (num == 3) {
+				alternatingSplit2(*t, f, s);
+			}
+			else {
+				printf("Invalid input! Choose from 1, 2 or 3!");
+			}
+			break;
+		case '6':
+			shuffleMerge(*f, *s);
+			getchar();
+			break;
+		case '7':
+			sortedMerge(*f, *s);
+			getchar();
+			break;
+		case '8':
+			*f = sortedIntersection(*s, *t);
+			getchar();
+			break;
+		case '9':
+			printf("To reverse recursively press 1, or 2 if not : ");
+			scanf("%d", &num);
+			if (num == 1) {
+				reverseRec(f);
+			}
+			else if (num == 2) {
+				reverse(f);
+			}
+			else {
+				printf("Invalid input!");
+			}
+			break;
+		case 'P':
+			printf("Choose list to print : ");
+			scanf("%d", &num);
+			getchar();
+			if (num == 1) {
+				printList(*f);
+			}
+			else if (num == 2) {
+				printList(*s);
+			}
+			else if (num == 3) {
+				printList(*t);
+			}
+			else {
+				printf("Invalid input! The lists are only 3!\n");
+			}
+			break;
+		default:
+			printf("Invalid input!\n");
+			break;
+
+		}
+		printf("\n\n");
+		printf("To sort the list press 0\n");
+		printf("To insert element in sorted list press 1\n");
+		printf("To append one list to another press 2\n");
+		printf("To split a list at two halfs press 3\n");
+		printf("To remove duplicates of the list press 4\n");
+		printf("To split the elements alternating press 5\n");
+		printf("To merge shufle two lists press 6\n");
+		printf("To merge two sorted lists press 7\n");
+		printf("To see the intersection of two lists press 8\n");
+		printf("To reverse list press 9\n");
+		printf("To return press R\n");
+		printf("\n\n");
 	}
-	printf("First list : \n");
-	printList(head);
-	printf("Second list : \n");
-	printList(head1);
-	//moveNode(&head, &head1);
-	//printList(head);
-	//printList(head1);
-	append(&head, &head1);
-	printf("Now the first list is : \n");
-	printList(head);
-	insertSort(&head);
-	printList(head);
-	removeDuplicates(&head);
-	printList(head);
-	//printf("And the second : \n");
-	//printList(head1);
-	//frontBackSplit(head, &head1, &head2);
-	//printf("First : \n");
-	//printList(head1);
-	//printf("Second : \n");
-	//printList(head2);
-	deleteList(head2);
-	printf("********************************splitting********************************\n");
-	alternatingSplit2(head, &head1, &head2);
-	printList(head1);
-	addAtEnd(44, head2);
-	addAtEnd(45, head2);
-	printList(head2);
-	head = shuffleMerge(head1, head2);
-	printf("after shuffle merge : \n");
-	printList(head);
-	
 
 	
-
-	Listptr h, h1, h2;
-	h2 = NULL;
-	h1 = makeNode(81);
-	push(&h1, 44);
-	push(&h1, 21);
-	push(&h1, 12);
-	push(&h1, 2);
-	push(&h1, 1);
-	h = sortedMerge(h1, h2);
-	printList(h);
-	h2 = makeNode(64);
-	push(&h2, 63);
-	push(&h2, 8);
-	push(&h2, 4);
-	printList(h1);
-	printList(h2);
-	h = shuffleMerge(h1, h2);
-	printList(h);
-	mergeSort(&h);
-	printList(h); */
-
-
-	Listptr a, b;
-	a = makeNode(20); b = makeNode(18);
-	push(&a, 17);  push(&a, 16); push(&a, 14);  push(&a, 13); push(&a, 12); push(&a, 10); push(&a, 8); push(&a, 6); push(&a, 3);
-	push(&b, 19);  push(&b, 17); push(&b, 15); push(&b, 10); push(&b, 9); push(&b, 7); push(&b, 5); push(&b, 3);
-	printList(a);
-	printList(b);
-	Listptr c = sortedIntersection(a, b);
-	printList(c);
-	reverseRec(&a);
-	printList(a);
 }

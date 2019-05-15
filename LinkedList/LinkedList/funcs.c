@@ -117,7 +117,7 @@ int GetNth(Listptr head, int n) {   /*returns value of n-th element in the list*
 
 void deleteList(Listptr* headp) {
 	if (headp == NULL || *headp == NULL) {
-		printf("List is empty!\n");
+		printf("Can't delete list - it's already empty!\n");
 		return;
 	}
 	Listptr cur = *headp;   //gets the first element
@@ -179,7 +179,11 @@ void insertSort(Listptr* head) {
 
 /*************************************************************************************************************/
 void append(Listptr* appTo, Listptr* toApp) {
-	Listptr last = *appTo;     
+	Listptr last = *appTo; 
+	if (last == NULL) {
+		printf("The first list is empty!\n");
+		return;
+	}
 	while (last->next != NULL) {     //go to the last element of first list
 		last = last->next;
 	}
@@ -221,6 +225,7 @@ void frontBackSplit(Listptr head, Listptr* front, Listptr* back) {
 	}
 	*front = f;     //now make front and back references to f and b, in the proccess head is deleted by pop func.
 	*back = b;
+	//deleteList(&head);
 }
 
 
@@ -269,7 +274,13 @@ void alternatingSplit(Listptr head, Listptr* first, Listptr* sec) { //using move
 
 /*************************************************************************************************************/
 
-void alternatingSplit2(Listptr head, Listptr* first, Listptr* sec) {  //after the function head still keeps last values???
+void alternatingSplit2(Listptr head, Listptr* first, Listptr* sec) {  
+	if (*first != NULL) {   //if some of the lists has elements, delete them
+		deleteList(first);
+	}
+	if (*sec != NULL) {
+		deleteList(sec);
+	}
 	int i, l = getLen(head);
 	moveNode(first, &head);  //getting the first two element of the list
 	moveNode(sec, &head);
@@ -283,7 +294,7 @@ void alternatingSplit2(Listptr head, Listptr* first, Listptr* sec) {  //after th
 				addAtEnd(n, *sec);
 			}
 	}
-		deleteList(&head);
+		
 }
 
 
@@ -384,31 +395,20 @@ Listptr sortedIntersection(Listptr f, Listptr s) {
 /*************************************************************************************************************/
 
 void reverse(Listptr* head) {
+	Listptr n, f;
+	int i = 0;
 	int l = getLen((*head));
-	int i , mid = l/2;
-	i = 0;
-	Listptr first, last, cur;
-	while (i < mid) {
-		cur = first = *head;
-		last = cur->next;
-		int j = i;
-		while (j > 0) {
-			first = first->next;
+	while (l > 1) {  
+		f = *head; //get the first and the second element
+		n = f->next;
+		for (int j = 0; j < i; j++) {   //go through the list, while reach the element we need (1.push second element, then third...)
+			n = n->next;
+			f = f->next;
 		}
-		int k = 0;
-		while (k < l) {
-			cur = cur->next;
-			last = last->next;
-		}
-		if (i == 0) {
-			last->next = first->next;
-			cur->next = first;
-			first->next = NULL;
-			*head = last;
-		}
-		else {
-
-		}
+		f->next = n->next;  //make the previous element point to the next of n
+		push(head, n->val);  //push elem. with n value
+		n->next = NULL;    //and delete element (push makes new one, so we don't need n anymore
+		free(n);
 		l--;
 		i++;
 	}
@@ -417,7 +417,7 @@ void reverse(Listptr* head) {
 /*************************************************************************************************************/
 
 void reverseRec(Listptr* head) {
-	if (*head == NULL || (*head)->next == NULL) {  //if no elements or only one - return
+	if (*head == NULL || (*head)->next == NULL) {  //when reached last element, stop
 		return;
 	}
 	else {
@@ -447,4 +447,19 @@ void printList(Listptr head) {
 		} 
 		printf("%d\n", cur->val);   //print the last element without --> 
 	}
+}
+
+
+/*************************************************************************************************************/
+
+
+int isSorted(Listptr* head) {
+	Listptr cur = *head;
+	while (cur->next != NULL) {
+		if (cur->val > cur->next->val) {
+			return 0;
+		}
+		cur = cur->next;
+	}
+	return 1;
 }
