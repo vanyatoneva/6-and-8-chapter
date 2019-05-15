@@ -12,7 +12,10 @@ Listptr makeNode(int n) {
 /*************************************************************************************************************/
 
 void addAtEnd(int n, Listptr head) {
-	
+	if (head == NULL) {
+		printf("The list is empty! Can not Insert in the end!\n");
+		return;
+	}
 	Listptr cur = head;
 	Listptr l = makeNode(n);   //make node with n value
 	while (cur->next != NULL) {   //goes to the last node of list
@@ -232,7 +235,7 @@ void frontBackSplit(Listptr head, Listptr* front, Listptr* back) {
 /*************************************************************************************************************/
 
 void removeDuplicates(Listptr* head) {
-	if (head == NULL) {
+	if (*head == NULL) {
 		printf("List is empty!\n");
 		return;
 	}
@@ -252,6 +255,10 @@ void removeDuplicates(Listptr* head) {
 /*************************************************************************************************************/
 
 void moveNode(Listptr* to, Listptr* from) {
+	if (*from == NULL) {
+		printf("Empty list! There isn't node to move!\n");
+		return;
+	}
 	int n = (*from)->val;   //get the value of first elem of sec list
 	push(to, n);           //push if to the first one
 	pop(from);              //remove the first elem of second list
@@ -275,6 +282,10 @@ void alternatingSplit(Listptr head, Listptr* first, Listptr* sec) { //using move
 /*************************************************************************************************************/
 
 void alternatingSplit2(Listptr head, Listptr* first, Listptr* sec) {  
+	if (head == NULL) {
+		printf("Can not split empty list!\n");
+		return;
+	}
 	if (*first != NULL) {   //if some of the lists has elements, delete them
 		deleteList(first);
 	}
@@ -371,6 +382,10 @@ Listptr sortedIntersection(Listptr f, Listptr s) {
 	Listptr intersect = NULL;  //create new list
 	Listptr firstL = f;         //make new pointers to check elements of lists, without changing them 
 	Listptr secL = s;
+	if (f == NULL || s == NULL) {
+		printf("One of lists is empty!\n");
+		return NULL;
+	}
 	while (firstL != NULL && secL != NULL) { 
 		if (firstL->val > secL->val) {   //if the value of first list is bigger than the second, check the next element of second(they may be same)
 			secL = secL->next;
@@ -454,6 +469,10 @@ void printList(Listptr head) {
 
 
 int isSorted(Listptr* head) {
+	if (*head == NULL) {
+		printf("List is empty!");
+		return 0;
+	}
 	Listptr cur = *head;
 	while (cur->next != NULL) {
 		if (cur->val > cur->next->val) {

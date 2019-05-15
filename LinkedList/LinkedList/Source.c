@@ -99,6 +99,7 @@ main() {
 		printf("To insert element in n-th position press 7\n");
 		printf("To get the element in n-th position, press 8\n");
 		printf("For other actions press 9\n");
+		printf("To add element in the end of the list press 0\n");
 		printf("To exit the program press E\n");
 		printf("\n\n");
 	}
@@ -109,7 +110,8 @@ main() {
 void otherfunc(Listptr* f, Listptr* s, Listptr* t) {
 	char c; 
 	int num, num2;
-	printf("To sort the list press 0\n");
+	getchar();
+	printf("\n\nTo sort the list press 0\n");
 	printf("To insert element in sorted list press 1\n");
 	printf("To append one list to another press 2\n");
 	printf("To split a list at two halfs press 3\n");
@@ -161,11 +163,11 @@ void otherfunc(Listptr* f, Listptr* s, Listptr* t) {
 			if (num == 1) {
 				if (num2 == 2) {
 					append(f, s);
-					*s = NULL;
+					//*s = NULL;
 				}
 				else if (num2 == 3) {
 					append(f, t);
-					*t = NULL;
+					//*t = NULL;
 				}
 				else {
 					printf("Invalid second input! Can choose from 2 or 3!\n");
@@ -174,11 +176,11 @@ void otherfunc(Listptr* f, Listptr* s, Listptr* t) {
 			else if (num == 2) {
 				if (num2 == 1) {
 					append(s, f);
-					*f = NULL;
+					//*f = NULL;
 				}
 				else if (num2 == 3) {
 					append(s, t);
-					*t = NULL;
+					//*t = NULL;
 				}
 				else {
 					printf("Invalid second input! Can choose from 1 or 3!\n");
@@ -187,11 +189,11 @@ void otherfunc(Listptr* f, Listptr* s, Listptr* t) {
 			else if (num == 3) {
 				if (num2 == 1) {
 					append(t, f);
-					*f = NULL;
+					//*f = NULL;
 				}
 				else if (num2 == 2) {
 					append(t, s);
-					*s = NULL;
+					//*s = NULL;
 				}
 				else {
 					printf("Invalid second input! Can choose from 1 or 2!\n");
@@ -230,19 +232,57 @@ void otherfunc(Listptr* f, Listptr* s, Listptr* t) {
 			getchar();
 			if (num == 1) {
 				alternatingSplit2(*f, s, t);
+				*f = NULL;
 			}
 			else if (num == 2) {
 				alternatingSplit2(*s, f, t);
+				*s = NULL;
 			}
 			else if (num == 3) {
 				alternatingSplit2(*t, f, s);
+				*t = NULL;
 			}
 			else {
 				printf("Invalid input! Choose from 1, 2 or 3!");
 			}
 			break;
 		case '6':
-			shuffleMerge(*f, *s);
+			printf("Which lists to merge ? ");
+			scanf("%d", &num);
+			scanf("%d", &num2);
+			if (num == 1) {
+				if (num2 == 2) {
+					*t = shuffleMerge(*f, *s);
+				}
+				else if (num2 == 3) {
+					*s = shuffleMerge(*f, *t);
+				}
+				else {
+					printf("Invalid input for second list!\n");
+				}
+			}
+			else if (num == 2) {
+				if (num2 == 1) {
+					 *t = shuffleMerge(*s, *f);
+				}
+				else if (num2 == 3) {
+					*f = shuffleMerge(*s, *t);
+				}
+				else {
+					printf("Invalid input for second list!\n");
+				}
+			}
+			else if (num == 3) {
+				if (num2 == 1) {
+					*s = shuffleMerge(*t, *f);
+				}
+				else if (num2 == 2) {
+					*f = shuffleMerge(*t, *s);
+				}
+				else {
+					printf("Invalid input for second list!\n");
+				}
+			}
 			getchar();
 			break;
 		case '7':
@@ -265,6 +305,7 @@ void otherfunc(Listptr* f, Listptr* s, Listptr* t) {
 			else {
 				printf("Invalid input!");
 			}
+			getchar();
 			break;
 		case 'P':
 			printf("Choose list to print : ");
