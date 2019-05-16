@@ -26,8 +26,8 @@ void removeDuplicates(Listptr* head);          //removes duplicates in sorted li
 void moveNode(Listptr* to, Listptr* from);     // move the first node from second list to the begin of the first
 void alternatingSplit(Listptr head, Listptr* first, Listptr* sec); //even elem. goes to the first, odd in the second - new lists are reversed !!
 void alternatingSplit2(Listptr head, Listptr* first, Listptr* sec); // this one makes the lists in the same order like the orig.
-Listptr shuffleMerge(Listptr f, Listptr s); //takes the two lists and makes it one - 0th of(1), 0th of(2), 1st of(1), 1st of(2) - in this order
-Listptr sortedMerge(Listptr f, Listptr s);   // takes two sorted lists, and make them one sorted list
+Listptr shuffleMerge(Listptr* f, Listptr* s); //takes the two lists and makes it one - 0th of(1), 0th of(2), 1st of(1), 1st of(2) - in this order
+Listptr sortedMerge(Listptr* f, Listptr* s);   // takes two sorted lists, and make them one sorted list
 void mergeSort(Listptr* head);     //sort recursively
 Listptr sortedIntersection(Listptr f, Listptr s); //makes new list, representing the intersection of the two given. Given lists must be in increasing order
 void reverse(Listptr* head); //reverses list

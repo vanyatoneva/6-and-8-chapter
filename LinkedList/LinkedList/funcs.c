@@ -311,20 +311,20 @@ void alternatingSplit2(Listptr head, Listptr* first, Listptr* sec) {
 
 /*************************************************************************************************************/
 
-Listptr shuffleMerge(Listptr f, Listptr s) {
-	Listptr merged = makeNode(pop(&f));    //make new list - begins with first elem of the first
-	while (f != NULL && s != NULL) {       //while there are elem. in the two
-		addAtEnd(pop(&s), merged);         //first get from second one(started with the first)
-		addAtEnd(pop(&f), merged);         //than from first
+Listptr shuffleMerge(Listptr* f, Listptr* s) {
+	Listptr merged = makeNode(pop(f));    //make new list - begins with first elem of the first
+	while (*f != NULL && *s != NULL) {       //while there are elem. in the two
+		addAtEnd(pop(s), merged);         //first get from second one(started with the first)
+		addAtEnd(pop(f), merged);         //than from first
 	}
-	if (f == NULL && s != NULL) {         //if reached the end of first, but there are more element in the second, get them
-		while (s != NULL) {
-			addAtEnd(pop(&s), merged);
+	if (*f == NULL && *s != NULL) {         //if reached the end of first, but there are more element in the second, get them
+		while (*s != NULL) {
+			addAtEnd(pop(s), merged);
 		}
 	}
-	else if (f != NULL && s == NULL) {     // -||-
-		while (f != NULL) {
-			addAtEnd(pop(&f), merged);
+	else if (*f != NULL && *s == NULL) {     // -||-
+		while (*f != NULL) {
+			addAtEnd(pop(f), merged);
 		}
 	}
 	return merged;
@@ -332,26 +332,26 @@ Listptr shuffleMerge(Listptr f, Listptr s) {
 
 /*************************************************************************************************************/
 
-Listptr sortedMerge(Listptr f, Listptr s) {
-	if (f == NULL || s == NULL) {            //checking if lists have elements, if one is empty return null instead of coping the other one
+Listptr sortedMerge(Listptr *f, Listptr *s) {
+	if (*f == NULL || *s == NULL) {            //checking if lists have elements, if one is empty return null instead of coping the other one
 		printf("One of lists is empty!\n");
 		return NULL;
 	}
 	else {
-		int fe = f->val < s->val ? pop(&f) : pop(&s);    //sets the smaller element for first  
+		int fe = (*f)->val < (*s)->val ? pop(f) : pop(s);    //sets the smaller element for first  
 		Listptr merged = makeNode(fe);
-		while (f != NULL && s != NULL) {                //while two list have elements, add the smaller of them
-			int min = f->val < s->val ? pop(&f) : pop(&s);
+		while (*f != NULL && *s != NULL) {                //while two list have elements, add the smaller of them
+			int min = (*f)->val < (*s)->val ? pop(f) : pop(s);
 			addAtEnd(min, merged);
 		}
-		if (f == NULL && s != NULL) {     //if end of one of list is reached, get the elements of other(they are already sorteD)
-			while (s != NULL) {
-				addAtEnd(pop(&s), merged);
+		if (*f == NULL && *s != NULL) {     //if end of one of list is reached, get the elements of other(they are already sorteD)
+			while (*s != NULL) {
+				addAtEnd(pop(s), merged);
 			}
 		}
-		else if (f != NULL && s == NULL) {
-			while (f != NULL) {
-				addAtEnd(pop(&f), merged);
+		else if (*f != NULL && *s == NULL) {
+			while (*f != NULL) {
+				addAtEnd(pop(f), merged);
 			}
 		}
 		return merged;

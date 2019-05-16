@@ -5,9 +5,8 @@
 
 void oneArgVoid(int n, void(*f)(Listptr*), Listptr* fi, Listptr* s, Listptr* t);   //n is num of the list, which will be passed to the function
 void threeArgFun(int n, void(*f)(Listptr, Listptr*, Listptr*), Listptr* fi, Listptr* s, Listptr* t); //void function, which takes one Listptr, and the ListptrRef
-Listptr twoArgsFun(int n, int n1, Listptr(*f)(Listptr, Listptr), Listptr* fi, Listptr* s, Listptr* t); //function, that takes two Listptr and return new Listptr
-
-
+Listptr twoArgsFun(int n, int n1, Listptr(*f)(Listptr, Listptr), Listptr* fi, Listptr* s, Listptr* t); //function, that takes two Listptr
+Listptr twoArgsRef(int n, int n2, Listptr(*f)(Listptr, Listptr), Listptr* fi, Listptr* s, Listptr* t); //for functions with two reference to head of list arguments
 void otherfunc(Listptr* f, Listptr* s, Listptr* t);
 
 
@@ -222,14 +221,14 @@ void otherfunc(Listptr* f, Listptr* s, Listptr* t) {
 			printf("Which lists ?");
 			scanf("%d", &num);
 			scanf("%d", &num2);
-			twoArgsFun(num, num2, (*shuffleMerge), f, s, t);
+			twoArgsRef(num, num2, (*shuffleMerge), f, s, t);
 			getchar();
 			break;
 		case '7':
 			printf("Which lists ?");
 			scanf("%d", &num);
 			scanf("%d", &num2);
-			twoArgsFun(num, num2, (*sortedMerge), f, s, t);
+			twoArgsRef(num, num2, (*sortedMerge), f, s, t);
 			getchar();
 			break;
 		case '8':
@@ -361,4 +360,49 @@ Listptr twoArgsFun(int n, int n2, Listptr(*f)(Listptr, Listptr), Listptr* fi, Li
 		return;
 	}
 	
+}
+
+
+Listptr twoArgsRef(int n, int n2, Listptr(*f)(Listptr, Listptr), Listptr* fi, Listptr* s, Listptr* t) {
+	if (n == 1) {
+		if (n2 == 2) {
+			*t = (*f)(fi, s);
+		}
+		else if (n2 == 3) {
+			*s = (*f)(fi, t);
+		}
+		else {
+			printf("Invalid input for the second list!\n");
+			return;
+		}
+	}
+	else if (n == 2) {
+		if (n2 == 1) {
+			*t = (*f)(s, fi);
+		}
+		else if (n2 == 3) {
+			*fi = (*f)(s, t);
+		}
+		else {
+			printf("Invalid input for the second list!\n");
+			return;
+		}
+	}
+	else if (n == 3) {
+		if (n2 == 1) {
+			*s = (*f)(t, fi);
+		}
+		else if (n2 == 2) {
+			*fi = (*f)(t, s);
+		}
+		else {
+			printf("Invalid input for the second list!\n");
+			return;
+		}
+	}
+	else {
+		printf("Invalid input for the first list!\n");
+		return;
+	}
+
 }
