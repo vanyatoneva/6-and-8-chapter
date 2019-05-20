@@ -1,15 +1,9 @@
-
-
 #include<stdio.h>
 #include<stdlib.h>
 #include<string.h>
 #include<ctype.h>
 
-
-
-
 #define MAX 40
-
 
 #define CONSTRUCTED 1
 #define IS_UNIVERSAL(n) !n      
@@ -17,9 +11,9 @@
 #define IS_CON_SPEC(n) !(n^2)
 #define IS_PRIVATE(n) !(n^3) 
 
-int getFirst3bits(unsigned int* n);
-void printInf(unsigned int* n);
-void checkTaginf(unsigned n);
+int getFirst3bits(unsigned int* n);  //returns first 3 bits - need to read the tag specifics
+void printInf(unsigned int* n);      //prints the info from the object
+void checkTaginf(unsigned n);        //prints the info for the class of tag
 
 
 main() {
@@ -30,9 +24,9 @@ main() {
 		if (scanf("%2x", &n)) {
 			num[i] = n;
 		}
-		else { break; }
+		else { break; } //when reach other character ot EOF, stop
 	};
-	while (i < MAX) {
+	while (i < MAX) {   //put zeroes to the end - use them for the base case of fun.
 		num[i++] = 0x00;
 	}
 	printInf(num);
@@ -62,7 +56,7 @@ void printInf(unsigned int* n) {
 		}
 	//check if next byte starts with 1 or 0 -> if 0, this is last byte, if not do again!
 	}
-	printf("Tag is : %x - ", tag);
+	printf("\n\nTag : %x - ", tag);
 
 	int len = *(++n); 
 	if ((len >> 7) & 1) {   //checks if first bit is set
@@ -74,13 +68,13 @@ void printInf(unsigned int* n) {
 		}
 	}
 
+	checkTaginf(tagInf>>1);  //only first two bits needed to check the class
 	
 	if (tagInf & CONSTRUCTED) {
 		//constructed data object
 		//see lentgh
 		// then see ->next is tag 
 		//need to pass all after the length, cause it's new tag
-		checkTaginf(tagInf);
 		printf(" template\n");
 		printf("Length : %d\n", len);
 		printInf(++n);
@@ -88,26 +82,20 @@ void printInf(unsigned int* n) {
 	}
 	else {
 		//primitive data object
-		checkTaginf(tagInf);
-		printf(" primitive\n");
+		printf(", primitive\n");
 		printf("Length : %d\n", len);
-
+		printf("Value : ");
 		if (!(tag^0x50)) {    //50 is application label - at this case print the char values 
-			printf("Value is : ");
 			while (len > 0) {
 				printf("%c", *(++n));
 				len--;
 			}
-			printf("\n");
 		}
-		else {
-
-			printf("Value is : ");
+		else {     
 			while(len > 0){
 				printf("%.2X", *(++n));
 				len--;
 			}
-			printf("\n");
 		}
 		printInf(++n); //see next tag
 
@@ -116,17 +104,16 @@ void printInf(unsigned int* n) {
 
 
 void checkTaginf(unsigned tag) {   //prints class of tag
-	tag >>= 1;    //we need only 2 bits
 	if (IS_UNIVERSAL(tag)) { 
-		printf("universal ");
+		printf("universal");
 	}
 	else if (IS_APPLICATION(tag)) {
-		printf("application ");
+		printf("application");
 	}
 	else if (IS_CON_SPEC(tag)) {
-		printf("context specific ");
+		printf("context specific");
 	}
 	else if(IS_PRIVATE(tag)){   
-		printf("private ");
+		printf("private");
 	}
 }
