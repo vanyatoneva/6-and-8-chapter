@@ -26,7 +26,7 @@ main() {
 	int n;
 	unsigned int num[MAX];
 	int i;
-	for (i = 0; i < MAX; i++) {   //!!!!only stops ir reads letter, which is not in hex - if reads space, new line or tab doesn't 
+	for (i = 0; i < MAX; i++) {  
 		if (scanf("%2x", &n)) {
 			num[i] = n;
 		}
@@ -35,9 +35,6 @@ main() {
 	while (i < MAX) {
 		num[i++] = 0x00;
 	}
-	//int* numptr = num;
-	//printf("%d", getFirst3bits(numptr));
-	int* numptr = num;
 	printInf(num);
 	
 }
@@ -57,13 +54,13 @@ void printInf(unsigned int* n) {
 
 	unsigned int tagInf = getFirst3bits(n);
 	int tag = *n;
-	//Now, get the value of tag to see if next byte is also part of it!
+	//Now, get the value of tag to see if next byte is also part of it
 	if (!((tagInf << 5 | 0x1f) ^ *n)) {   //will return true only if some bits are different, is false -> last 5 bits of n are set => next bit is part of tag
 		tag = (tag << 8) | *++n;
 		if ((*n << 7) & 1) {
 			tag = (tag << 8) | *++n;
 		}
-	//!!!!!!!!Need to check if next byte starts with 1 or 0 -> if 0, this is last byte, if not do again!
+	//check if next byte starts with 1 or 0 -> if 0, this is last byte, if not do again!
 	}
 	printf("Tag is : %x - ", tag);
 
@@ -71,23 +68,18 @@ void printInf(unsigned int* n) {
 	if ((len >> 7) & 1) {   //checks if first bit is set
 		if (len & 1) {
 			len = *(++n);      //if set and the value is 1 - next byte keeps length
-			printf("Len is %x = %d\n", len, len);
 		}
 		else if (len & 2) {
 			len = (*(++n) << 8) | *(++n);     //is value is 2 - next 2 bytes are the length! 
-			printf("Len is %x = %d\n", len, len);
 		}
 	}
-
-	//!!!!!! If len first bit is 1, check the value of len to see - if 1 next byte is length, if 2 - next two bytes are length!!!!!
-
 
 	
 	if (tagInf & CONSTRUCTED) {
 		//constructed data object
 		//see lentgh
 		// then see ->next is tag 
-		//need to pass all after the length, cause it new tag
+		//need to pass all after the length, cause it's new tag
 		checkTaginf(tagInf);
 		printf(" template\n");
 		printf("Length : %d\n", len);
@@ -99,11 +91,8 @@ void printInf(unsigned int* n) {
 		checkTaginf(tagInf);
 		printf(" primitive\n");
 		printf("Length : %d\n", len);
-		char* b = (char*)malloc(1);     //to save next byte
-		char* val = (char*)malloc(len*2);   //need extra space, because of adding '0' in the case 0x0000 xxxx !!! 
 
-
-		if (tag == 0x50) {
+		if (!(tag^0x50)) {    //50 is application label - at this case print the char values 
 			printf("Value is : ");
 			while (len > 0) {
 				printf("%c", *(++n));
@@ -117,26 +106,10 @@ void printInf(unsigned int* n) {
 			while(len > 0){
 				printf("%.2X", *(++n));
 				len--;
-			/*itoa(*++n, b, 16);    //convert to char
-			if (strlen(b) == 1) {
-				strcpy(val, "0");
-				strcat(val, b);
-			}
-			else {
-				strcpy(val, b); //save the first in value
-			}
-			while (len > 1) {
-				itoa(*++n, b, 16);    //copy to val len num of ints
-				if (strlen(b) == 1) {   //if num is 0000 xxxx - b will not have the zeroes, need to add them
-					strcat(val, "0");
-				}
-				strcat(val, b);
-				len--;*/
 			}
 			printf("\n");
 		}
-		//printf("Value is : %s\n\n", val);
-		printInf(++n);
+		printInf(++n); //see next tag
 
 	}	
 }
@@ -144,7 +117,7 @@ void printInf(unsigned int* n) {
 
 void checkTaginf(unsigned tag) {   //prints class of tag
 	tag >>= 1;    //we need only 2 bits
-	if (IS_UNIVERSAL(tag)) {  //case two bits are 0
+	if (IS_UNIVERSAL(tag)) { 
 		printf("universal ");
 	}
 	else if (IS_APPLICATION(tag)) {
