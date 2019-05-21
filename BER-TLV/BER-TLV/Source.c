@@ -12,12 +12,13 @@
 #define IS_PRIVATE(n) !(n^3) 
 
 int getFirst3bits(unsigned int* n);  //returns first 3 bits - need to read the tag specifics
-void printInf(unsigned int* n);      //prints the info from the object
+void printInf(unsigned int* n, int length);      //prints the info from the object
 void checkTaginf(unsigned n);        //prints the info for the class of tag
 
 
 main() {
 	int n;
+	char c;
 	unsigned int num[MAX];
 	int i;
 	for (i = 0; i < MAX; i++) {  
@@ -26,11 +27,10 @@ main() {
 		}
 		else { break; } //when reach other character ot EOF, stop
 	};
-	while (i < MAX) {   //put zeroes to the end - use them for the base case of fun.
+	while (i < MAX) {   //put zeroes to the end - use them for the base case of func.
 		num[i++] = 0x00;
 	}
-	printInf(num);
-	
+	printInf(num, MAX);
 }
 
 int getFirst3bits(unsigned int* n) {
@@ -38,38 +38,52 @@ int getFirst3bits(unsigned int* n) {
 }
 
 
-void printInf(unsigned int* n) {
+void printInf(unsigned int* n, int length) {
 
 	//base case !! if *n is 0;
-	if (*n == 0) {
+	//if (*n == 0) {
+	//	return;
+	//}
+	if (length <= 0) {  //base case - when the end reached
+		return;
+	}
+	if (*n == 0) {   //if there are meaningless zeroes - skip them and go to the next byte
+		printInf(++n, length - 1);
 		return;
 	}
 
-
 	unsigned int tagInf = getFirst3bits(n);
 	int tag = *n;
+	int tagbytes = 1;  //need to keep num of bytes of tag and length, to know what length to pass to function
 	//Now, get the value of tag to see if next byte is also part of it
 	if (!((tagInf << 5 | 0x1f) ^ *n)) {   //will return true only if some bits are different, is false -> last 5 bits of n are set => next bit is part of tag
 		tag = (tag << 8) | *++n;
-		if ((*n << 7) & 1) {
+		tagbytes++;
+		if ((*n >> 7) & 1) {
 			tag = (tag << 8) | *++n;
+			tagbytes++;
 		}
 	//check if next byte starts with 1 or 0 -> if 0, this is last byte, if not do again!
 	}
 	printf("\n\nTag : %x - ", tag);
 
 	int len = *(++n); 
+	int lenbytes = 1;   //need to keep num of bytes of tag and length, to know what length to pass to function
 	if ((len >> 7) & 1) {   //checks if first bit is set
 		if (len & 1) {
 			len = *(++n);      //if set and the value is 1 - next byte keeps length
+			lenbytes++;
 		}
 		else if (len & 2) {
 			len = (*(++n) << 8) | *(++n);     //is value is 2 - next 2 bytes are the length! 
+			lenbytes += 2;
 		}
 	}
 
 	checkTaginf(tagInf>>1);  //only first two bits needed to check the class
 	
+	//if tag is more than one bit, check the last to see if constructed???//
+
 	if (tagInf & CONSTRUCTED) {
 		//constructed data object
 		//see lentgh
@@ -77,7 +91,7 @@ void printInf(unsigned int* n) {
 		//need to pass all after the length, cause it's new tag
 		printf(" template\n");
 		printf("Length : %d\n", len);
-		printInf(++n);
+		printInf(++n, len);
 
 	}
 	else {
@@ -85,19 +99,20 @@ void printInf(unsigned int* n) {
 		printf(", primitive\n");
 		printf("Length : %d\n", len);
 		printf("Value : ");
+		int l = len;
 		if (!(tag^0x50)) {    //50 is application label - at this case print the char values 
-			while (len > 0) {
+			while (l > 0) {
 				printf("%c", *(++n));
-				len--;
+				l--;
 			}
 		}
 		else {     
-			while(len > 0){
+			while(l > 0){
 				printf("%.2X", *(++n));
-				len--;
+				l--;
 			}
 		}
-		printInf(++n); //see next tag
+		printInf(++n, length - len - tagbytes - lenbytes); //see next tag - pass to it the given length(it keeps the length of all next tags too) without the length of the current tag, length and value
 
 	}	
 }
