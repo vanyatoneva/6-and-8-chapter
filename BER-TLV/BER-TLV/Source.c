@@ -79,10 +79,10 @@ void printInf(unsigned int* n, int length) {
 			lenbytes += 2;
 		}
 	}
-
-	checkTaginf(tagInf>>1);  //only first two bits needed to check the class
 	
-	//if tag is more than one bit, check the last to see if constructed???//
+	checkTaginf(tagInf>>1);  //only first two bits needed to check the class
+
+
 
 	if (tagInf & CONSTRUCTED) {
 		//constructed data object
@@ -95,8 +95,20 @@ void printInf(unsigned int* n, int length) {
 
 	}
 	else {
-		//primitive data object
-		printf(", primitive\n");
+		if (tagbytes > 1) { //if tag is more than one bit, check the last to see if constructed - save the bits in tagInf, the info from the first byte is already checked//
+			tagInf = tag & 0xFF; //will return only the last byte value
+			tagInf =  getFirst3bits(&tagInf);//get first three bits of it in tagInf, to check if constructed
+			if (tagInf & CONSTRUCTED) {
+				printf(", constructed\n");
+			}
+			else {
+				printf(", primitive\n");
+			}
+		}
+		else {
+			//primitive data object
+			printf(", primitive\n");
+		}
 		printf("Length : %d\n", len);
 		printf("Value : ");
 		int l = len;
